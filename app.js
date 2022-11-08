@@ -27,43 +27,41 @@ app.get('/scraping/:uri', async (req, res) => {
   const info = await plt(encoded);
   const dataParsed = JSON.parse(info);
 
+  // console.log(dataParsed);
 
-  const { name, price } = dataParsed?.find(element => element.name);
+
+  const { name, price, sku, img } = dataParsed?.find(element => element.name);
 
   const { availability } = dataParsed?.find(element => element.size === '41');
 
 
   const sizes = dataParsed?.map(element => {
+    console.log("ELEMENT ", element);
     if (element.size !== undefined) return { size: element.size }
     else return; 
   }
    );
-  console.log("SIZES ", sizes)
+
+  // console.log("SIZES ", sizes)
 
   // console.log("AVAILABILITY", availability);
 
-
   const { data, error } = await supabase
   .from('products')
-  .insert({ name, price, availability })
+  .insert({ name, price, availability, sku, img })
   .select();
 
 
-  console.log(data);
-  console.log(error);
+  // console.log('DATA ', data);
+  // console.log(error);
 
   sizes.map(async(size) => {
     const { datasize, errorsize } = await supabase
     .from('sizes')
-    .insert({ size, product_id: data.id })
+    .insert({ size, product_id: data[0]?.id })
     .select();
     return datasize;
   });
-
-
-  console.log(datasize);
-  console.log(errorsize);
-
 
 
   res.json(data)

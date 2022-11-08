@@ -11,31 +11,39 @@ async function scraping(url) {
   const bodyHandle = await page.$('body');
 
   let data = await page.evaluate((body) => {
-    const sizeAvailables = [];
+    const product = [];
 
       const offers = document.querySelectorAll(".size-options .selproduct-size-ect .product-size-select");
       const name = document.querySelector(".product-view-title").innerText;
+
       const priceText = document.querySelector(".price-container.new .price .price").innerText;
       const priceSplitted = priceText.split(' €')[0];
       const priceReplaced = priceSplitted.replace(',','.');
       const price = parseFloat(priceReplaced);
 
+      const sku = document.querySelector(".sku-pos").innerText;
 
+      const img = document.querySelector('.img-responsive').getAttribute('src');
+
+      // get all sizes
       [...offers].forEach((offer) => {
         const size = offer.innerText;
         const availability = offer.classList.contains("size-is-out-of-stock");
 
-        sizeAvailables.push({
+        product.push({
           size,
           availability: !availability
         });
       });
-      sizeAvailables.push({
+
+      product.push({
         name,
-        price
+        price,
+        sku,
+        img
       });
 
-      return sizeAvailables;
+      return product;
   }, bodyHandle);
 
   // data.forEach((offer) => {
