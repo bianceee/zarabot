@@ -15,7 +15,6 @@ async function scraping(url) {
 
       const offers = document.querySelectorAll(".size-options .selproduct-size-ect .product-size-select");
       const name = document.querySelector(".product-view-title").innerText;
-      
 
       let basePrice;
 

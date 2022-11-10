@@ -29,22 +29,15 @@ app.post('/scraping', async (req, res) => {
   const info = await plt(uri);
   const dataParsed = JSON.parse(info);
 
-  // console.log(dataParsed);
-
   const { name, price, sku, img, category } = dataParsed?.find(element => element.name);
 
   // Todo: add shoe size choice programatically
   // const { availability } = dataParsed?.find(element => element.size === '41');
 
-
   const sizes = dataParsed?.filter(element => {
     if (element.size !== undefined) return { size: element.size }
     else return; 
   });
-
-  // console.log("SIZES ", sizes)
-
-  // console.log("AVAILABILITY", availability);
 
   const { data, error } = await supabase
   .from('products')
@@ -57,7 +50,6 @@ app.post('/scraping', async (req, res) => {
     category
    })
   .select();
-
 
   console.log('DATA ', data);
   console.log(error);
