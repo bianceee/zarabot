@@ -60,10 +60,11 @@ async function scraping(url) {
       return product;
   }, bodyHandle);
 
-  data.forEach((offer) => {
-    console.table(offer)
-    console.log(`Taille ${offer.size} : ${offer.availability}`);
-  });
+  // DEBUG
+  // data.forEach((offer) => {
+  //   console.table(offer)
+  //   console.log(`Taille ${offer.size} : ${offer.availability}`);
+  // });
 
   browser.close();
   return JSON.stringify(data);

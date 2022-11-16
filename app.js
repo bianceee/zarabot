@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 import plt from './plt.js';
 import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
+import brandService from './brandService.js';
 dotenv.config()
 
 const supabaseUrl = 'https://zeyfmevhaplspnysldif.supabase.co';
@@ -29,6 +30,10 @@ app.post('/scraping', async (req, res) => {
   const info = await plt(uri);
   const dataParsed = JSON.parse(info);
 
+  const regex = /(?<=https?:\/\/(?:www\.)?)(?!www\.).+?(?=\/)/;
+  const brand = uri.match(regex)[0];
+  console.log(brand);
+
   const { name, price, sku, img, category } = dataParsed?.find(element => element.name);
 
   // Todo: add shoe size choice programatically
@@ -38,6 +43,9 @@ app.post('/scraping', async (req, res) => {
     if (element.size !== undefined) return { size: element.size }
     else return; 
   });
+ 
+  const newBrand = brandService(supabase).findOrCreateBrand(brand);
+  console.log(newBrand);
 
   const { data, error } = await supabase
   .from('products')
@@ -47,20 +55,21 @@ app.post('/scraping', async (req, res) => {
     availability: false, 
     sku, 
     img,
-    category
+    category,
+    // brand_id: databrand.uuid
    })
   .select();
 
-  console.log('DATA ', data);
-  console.log(error);
+  // console.log('DATA ', data);
+  console.log('ERROR ', error);
   
   if (data) {
-    sizes.map(async(size) => {
-      const { datasize, errorsize } = await supabase
+    sizes.forEach(element => {
+      
+    });(async(size) => {
+      await supabase
       .from('sizes')
       .insert({ size, product_id: data[0]?.id })
-      .select();
-      return datasize;
     });
   }
 
