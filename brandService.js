@@ -9,15 +9,13 @@ export default function (supabase) {
     .from('brands')
     .select();
 
-    console.log(error);
+    console.log("FETCHBRAND ", error);
     brands = data;
     return data;
   }
 
   async function resolveBrand(brand) {
     if (brands === null) await fetchBrands();
-
-    // check si ca existe dans brands
 
     return brands.find((item) => item.name === brand);
   }
@@ -27,17 +25,16 @@ export default function (supabase) {
     const { data, error } = await supabase
     .from('brands')
     .insert({ name: brand, uuid: uuidv4() })
-
-    console.log(error);
-    console.log(data);
-
-    return data;
+    .select();
+    
+    console.log("CREATEBRAND ", error)
+    return data[0];
   }
 
-  function findOrCreateBrand(brand) {
-    brand = resolveBrand(brand);
+  async function findOrCreateBrand(brand) {
+    brand = await resolveBrand(brand);
 
-    return brand ? brand : createBrand();
+    return brand ? brand : await createBrand();
   }
 
   return { findOrCreateBrand };

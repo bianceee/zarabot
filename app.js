@@ -44,8 +44,7 @@ app.post('/scraping', async (req, res) => {
     else return; 
   });
  
-  const newBrand = brandService(supabase).findOrCreateBrand(brand);
-  console.log(newBrand);
+  const newBrand = await brandService(supabase).findOrCreateBrand(brand);
 
   const { data, error } = await supabase
   .from('products')
@@ -56,17 +55,13 @@ app.post('/scraping', async (req, res) => {
     sku, 
     img,
     category,
-    // brand_id: databrand.uuid
+    brand_id: newBrand.uuid
    })
   .select();
-
-  // console.log('DATA ', data);
   console.log('ERROR ', error);
   
   if (data) {
-    sizes.forEach(element => {
-      
-    });(async(size) => {
+    sizes.forEach(async(size) => {
       await supabase
       .from('sizes')
       .insert({ size, product_id: data[0]?.id })
