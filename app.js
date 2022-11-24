@@ -8,7 +8,7 @@ import brandService from './brandService.js';
 import productService from './productsService.js'
 dotenv.config()
 
-const supabaseUrl = 'https://zeyfmevhaplspnysldif.supabase.co';
+const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -35,14 +35,11 @@ app.post('/scraping', async (req, res) => {
   const brand = uri.match(regex)[0];
   console.log(brand);
 
-
   // Todo: add shoe size choice programatically
   // const { availability } = dataParsed?.find(element => element.size === '41');
 
- 
   const newBrand = await brandService(supabase).findOrCreateBrand(brand);
   const data = await productService(supabase, newBrand.uuid).findOrCreateProduct(dataParsed);
-  
 
   res.json(data)
 })
@@ -50,4 +47,3 @@ app.post('/scraping', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`)
 })
-  
