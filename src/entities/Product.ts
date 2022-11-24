@@ -1,17 +1,16 @@
-import {SupabaseClient} from "@supabase/supabase-js";
+import Supabase from "../helpers/Supabase";
 
 let products: any = null;
 
-export default function (supabase: SupabaseClient, brandUUID: string) {
+export default function (brandUUID: string) {
   async function fetchProducts() {
-    const {data, error} = await supabase
+    const {data, error} = await Supabase()
       .from('products')
       .select();
 
     console.log('PRODUCT ERROR', error);
 
-    products = data;
-    return products;
+    return data;
   }
 
   async function resolveProduct(sku: string) {
@@ -22,7 +21,7 @@ export default function (supabase: SupabaseClient, brandUUID: string) {
 
   async function createProduct(dataScraped: any) {
     const {name, price, sku, img, category} = dataScraped?.find((element: any) => element.name);
-    const {data, error} = await supabase
+    const {data, error} = await Supabase()
       .from('products')
       .insert({
         name,
@@ -59,7 +58,7 @@ export default function (supabase: SupabaseClient, brandUUID: string) {
     });
 
     sizes.forEach(async (size: any) => {
-      const {data, error} = await supabase
+      const {data, error} = await Supabase()
         .from('sizes')
         .insert({size: size.size, product_id: productId, availability: size.availability})
         .select();
