@@ -2,12 +2,15 @@
   "name": "shoppingbot",
   "version": "1.0.0",
   "description": "shopping bot",
-  "main": "app.js",
-  "type": "module",
+  "main": "src/app.ts",
+  "type": "commonjs",
   "scripts": {
-    "start": "nodemon app.js"
+    "dev": "vite",
+    "start": "ts-node src/app.ts"
   },
-  "keywords": ["bot"],
+  "keywords": [
+    "bot"
+  ],
   "author": "bianceee",
   "license": "ISC",
   "dependencies": {
@@ -19,6 +22,11 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "@types/express": "^4.17.14",
+    "@types/uuid": "^8.3.4",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3",
+    "vite": "^3.2.4"
   }
 }
