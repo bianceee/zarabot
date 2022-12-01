@@ -1,13 +1,14 @@
 import Supabase from "../helpers/Supabase";
 
 export interface Product {
-  id: string
+  id?: string
+  created_at?: string
   name: string
   price: number
   sku: string
   img: string
   category: string
-  brand_id: string
+  brand_id: number
   sizes: Size[]
 }
 
@@ -15,10 +16,11 @@ export interface Size {
   id: string
   size: string
   product_id: string
+  created_at?: string
   availability: boolean
 }
 
-export default function (brandUUID: string) {
+export default function (brandUUID: number) {
   async function getProductBySku(sku: string): Promise<Product | null> {
     const {data, error} = await Supabase()
       .from('products')
@@ -35,7 +37,6 @@ export default function (brandUUID: string) {
     const {data, error} = await Supabase()
       .from('products')
       .insert({
-        id: product.id,
         name: product.name,
         price: product.price,
         sku: product.sku,

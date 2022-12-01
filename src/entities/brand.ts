@@ -2,8 +2,9 @@ import {v4 as uuidv4} from 'uuid'
 import Supabase from "../helpers/Supabase";
 
 export interface Brand {
-  id: string
-  name: string
+  id: number
+  created_at?: string
+  name: string,
 }
 
 export default function () {

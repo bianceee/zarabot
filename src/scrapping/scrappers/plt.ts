@@ -1,22 +1,24 @@
-import {Page} from 'puppeteer';
 import product, {Size} from "../../entities/product";
 import {Brand} from "../../entities/brand";
-import {v4 as uuidv4} from 'uuid'
+import {v4 as uuidv4} from 'uuid';
+import {initPuppeteer,closePuppeteer} from '../scrap';
 
 export default function (brand: Brand) {
 
-  async function scrap(page: Page): Promise<void> {
-    const id = uuidv4()
+  async function scrap(url: string): Promise<void> {
+    const id = uuidv4();
+
+    const {page, browser} = await initPuppeteer(url);
 
     const {sku, name, price, category, sizes, img} = await page.evaluate(() => {
       function resolveSku() {
         const selector = document.querySelector(".sku-pos") as HTMLElement
-        return selector.innerText
+        return selector.innerText;
       }
 
       function resolveName(): string {
         const selector = document.querySelector(".product-view-title") as HTMLElement
-        return selector.innerText
+        return selector.innerText;
       }
 
       function resolveImg(): string {
@@ -24,7 +26,7 @@ export default function (brand: Brand) {
       }
 
       function resolvePrice(): number {
-        let price
+        let price: String;
 
         if (!document.querySelector("#product-right .regular-price .price")) {
           const selector = document.querySelector(".price-container.new .price .price") as HTMLElement
@@ -43,7 +45,7 @@ export default function (brand: Brand) {
       }
 
       function resolveSize(): Partial<Size>[] {
-        const sizes: Partial<Size>[] = []
+        const sizes: Partial<Size>[] = [];
         let elements = document.querySelectorAll(".size-options .selproduct-size-ect .product-size-select") as unknown as HTMLElement[]
 
         elements.forEach((element: HTMLElement) => {
@@ -65,6 +67,8 @@ export default function (brand: Brand) {
       }
     }, await page.$('body'));
 
+    closePuppeteer(browser);
+
     if (await product(brand.id).getProductBySku(sku))
       throw "Produit déjà existant"
 
@@ -84,7 +88,6 @@ export default function (brand: Brand) {
       price,
     })
   }
-
 
   return {scrap};
 }

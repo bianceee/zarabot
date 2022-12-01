@@ -12,8 +12,14 @@ async function scraping(url) {
   
     let data = await page.evaluate((body) => {
     	const product = [];
-			const offers = document.querySelectorAll('#sizesContainer li ')
+			const offers = document.querySelectorAll('#sizesContainer li button span');
+      const price = document.querySelector('.product-features-prices [data-testid="currentPrice"] .text-title-xl');
+      const name = document.querySelector('.product-features .product-name');
+      const sku = document.querySelector('.product-reference');
 
+      product.push(offers, price, name, sku)
+
+      return product;
         
     }, bodyHandle);
 
