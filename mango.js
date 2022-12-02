@@ -24,7 +24,7 @@ async function scraping(url) {
     }, bodyHandle)
 
 
-    browser.close()
+    await browser.close()
     return JSON.stringify(data)
 
 }
