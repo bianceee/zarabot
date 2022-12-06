@@ -38,7 +38,7 @@ export async function closePuppeteer(browser: Browser) {
 export default async function (url: string) {
   const domain = extractDomainFromUrl(url)
 
-  if (!domains.hasOwnProperty(domain)) throw `Domaine "${domain}" inconnu`
+  if (!Object.prototype.hasOwnProperty.call(domains, domain)) throw `Domaine "${domain}" inconnu`
 
   await domains[domain](await brand().findOrCreateBrand(domain), url)
 
